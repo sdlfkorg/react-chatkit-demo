@@ -1,22 +1,16 @@
 import React, { Component } from 'react'
+import Message from './Message';
 
 export class MessageList extends Component {
   render() {
     return (
-      <ul className="message-list">                 
-        {this.props.messages.map(message => {
-          return (
-           <li key={message.id}>
-             <div>
-               {message.senderId}
-             </div>
-             <div>
-               {message.text}
-             </div>
-           </li>
-         )
-       })}
-     </ul>
+      <div className="message-list">
+        {this.props.messages.map((message, index) => {
+            return (
+                <Message key={message.id} username={message.senderId} text={message.text} />
+            )
+        })}
+    </div>
     )
   }
 }
