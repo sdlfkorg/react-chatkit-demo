@@ -22,7 +22,9 @@ export class App extends Component {
   constructor() {
     super()
     this.state = {
-       messages: DUMMY_DATA
+       messages: DUMMY_DATA,
+       joinableRooms: [],
+       joinedRooms: []
     }
     this.sendMessage = this.sendMessage.bind(this);
   }
@@ -39,7 +41,18 @@ export class App extends Component {
     chatManager.connect()
     .then(currentUser => {
       this.currentUser = currentUser;
-      currentUser.subscribeToRoomMultipart({
+
+      this.currentUser.getJoinableRooms()
+      .then(joinableRooms => {
+        this.setState({
+            joinableRooms,
+            joinedRooms: this.currentUser.rooms
+        })
+        console.log('joinableRooms: ', joinableRooms, this.currentUser.rooms)
+      })
+      .catch(err => console.log('error on joinableRooms: ', err))
+
+      this.currentUser.subscribeToRoomMultipart({
         roomId: currentUser.rooms[0].id,
         hooks: {
           onMessage: message => {
@@ -68,7 +81,7 @@ export class App extends Component {
   render() {
     return (
       <div className="app">
-        <RoomList />
+        <RoomList rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
         <MessageList messages={this.state.messages}/>
         <SendMessageForm sendMessage={this.sendMessage} />
         <NewRoomForm />
