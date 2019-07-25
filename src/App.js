@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Chatkit from '@pusher/chatkit-client';
-import './App.css';
+import './index.css';
 import Title from './components/Title';
 import MessageList from './components/MessageList';
 import SendMessageForm from './components/SendMessageForm';
@@ -66,7 +66,7 @@ export class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="app">
         <Title />
         <MessageList messages={this.state.messages}/>
         <SendMessageForm sendMessage={this.sendMessage} />
