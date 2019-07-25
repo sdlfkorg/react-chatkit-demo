@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import Chatkit from '@pusher/chatkit-client';
 import './index.css';
-import Title from './components/Title';
+import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
 import SendMessageForm from './components/SendMessageForm';
 import { testToken, instanceLocator, userId, roomId } from './config'
+import NewRoomForm from './components/NewRoomForm';
 
 const DUMMY_DATA = [
   // {
@@ -67,9 +68,10 @@ export class App extends Component {
   render() {
     return (
       <div className="app">
-        <Title />
+        <RoomList />
         <MessageList messages={this.state.messages}/>
         <SendMessageForm sendMessage={this.sendMessage} />
+        <NewRoomForm />
     </div>
     )
   }
