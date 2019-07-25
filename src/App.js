@@ -4,7 +4,7 @@ import './App.css';
 import Title from './components/Title';
 import MessageList from './components/MessageList';
 import SendMessageForm from './components/SendMessageForm';
-import { testToken, instanceLocator, userId } from './config'
+import { testToken, instanceLocator, userId, roomId } from './config'
 
 const DUMMY_DATA = [
   // {
@@ -23,6 +23,7 @@ export class App extends Component {
     this.state = {
        messages: DUMMY_DATA
     }
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
   componentDidMount() {
@@ -36,6 +37,7 @@ export class App extends Component {
 
     chatManager.connect()
     .then(currentUser => {
+      this.currentUser = currentUser;
       currentUser.subscribeToRoomMultipart({
         roomId: currentUser.rooms[0].id,
         hooks: {
@@ -53,15 +55,21 @@ export class App extends Component {
     .catch(error => {
       console.error("error:", error);
     })
+  }
 
-}
+  sendMessage(text) {
+    this.currentUser.sendMessage({
+      text: text,
+      roomId: roomId
+    })
+  }
 
   render() {
     return (
       <div className="App">
         <Title />
         <MessageList messages={this.state.messages}/>
-        <SendMessageForm />
+        <SendMessageForm sendMessage={this.sendMessage} />
     </div>
     )
   }
