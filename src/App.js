@@ -25,11 +25,12 @@ export class App extends Component {
        messages: DUMMY_DATA,
        joinableRooms: [],
        joinedRooms: [],
-       roomId
+       roomId: null
     }
     this.sendMessage = this.sendMessage.bind(this);
     this.getRooms = this.getRooms.bind(this);
     this.subscribeToRoom = this.subscribeToRoom.bind(this);
+    this.createRoom = this.createRoom.bind(this);
   }
 
   componentDidMount() {
@@ -45,7 +46,7 @@ export class App extends Component {
     .then(currentUser => {
       this.currentUser = currentUser;
       this.getRooms();
-      this.subscribeToRoom(currentUser.rooms[0].id);
+      // this.subscribeToRoom(currentUser.rooms[0].id);
 
     })
     .catch(error => {
@@ -60,7 +61,7 @@ export class App extends Component {
             joinableRooms,
             joinedRooms: this.currentUser.rooms
         })
-        console.log('joinableRooms: ', joinableRooms, this.currentUser.rooms)
+        // console.log('joinableRooms: ', joinableRooms, this.currentUser.rooms)
       })
       .catch(err => console.log('error on joinableRooms: ', err))
   }
@@ -72,7 +73,7 @@ export class App extends Component {
       roomId: roomId,
       hooks: {
         onMessage: message => {
-          console.log("Received message:", message)
+          // console.log("Received message:", message)
           this.setState({
             messages: [
               ...this.state.messages, 
@@ -94,6 +95,13 @@ export class App extends Component {
     })
   }
 
+  createRoom(name){
+    console.log('createRoom', name);
+    this.currentUser.createRoom({name})
+    .then(room => this.subscribeToRoom(room.id))
+    .catch(err => console.log('error with createRoom: ', err))
+  }
+
   render() {
     return (
       <div className="app">
@@ -102,9 +110,15 @@ export class App extends Component {
           subscribeToRoom={this.subscribeToRoom}
           rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} 
         />
-        <MessageList messages={this.state.messages}/>
-        <SendMessageForm sendMessage={this.sendMessage} />
-        <NewRoomForm />
+        <MessageList 
+          messages={this.state.messages}
+          roomId={this.state.roomId}
+        />
+        <SendMessageForm 
+          disabled={!this.state.roomId}
+          sendMessage={this.sendMessage}
+        />
+        <NewRoomForm createRoom={this.createRoom} />
     </div>
     )
   }
