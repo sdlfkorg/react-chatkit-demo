@@ -4,25 +4,14 @@ import './index.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
 import SendMessageForm from './components/SendMessageForm';
-import { testToken, instanceLocator, userId, roomId } from './config'
+import { testToken, instanceLocator } from './config'
 import NewRoomForm from './components/NewRoomForm';
-
-const DUMMY_DATA = [
-  // {
-  //   senderId: "perborgen",
-  //   text: "who'll win?"
-  // },
-  // {
-  //   senderId: "janedoe",
-  //   text: "who'll win?"
-  // }
-]
 
 export class App extends Component {
   constructor() {
     super()
     this.state = {
-       messages: DUMMY_DATA,
+       messages: [],
        joinableRooms: [],
        joinedRooms: [],
        roomId: null
@@ -46,7 +35,6 @@ export class App extends Component {
     .then(currentUser => {
       this.currentUser = currentUser;
       this.getRooms();
-      // this.subscribeToRoom(currentUser.rooms[0].id);
 
     })
     .catch(error => {
@@ -61,7 +49,6 @@ export class App extends Component {
             joinableRooms,
             joinedRooms: this.currentUser.rooms
         })
-        // console.log('joinableRooms: ', joinableRooms, this.currentUser.rooms)
       })
       .catch(err => console.log('error on joinableRooms: ', err))
   }
@@ -73,7 +60,6 @@ export class App extends Component {
       roomId: roomId,
       hooks: {
         onMessage: message => {
-          // console.log("Received message:", message)
           this.setState({
             messages: [
               ...this.state.messages, 
@@ -96,7 +82,6 @@ export class App extends Component {
   }
 
   createRoom(name){
-    console.log('createRoom', name);
     this.currentUser.createRoom({name})
     .then(room => this.subscribeToRoom(room.id))
     .catch(err => console.log('error with createRoom: ', err))
